@@ -53,16 +53,27 @@ struct SampleSpace {
 
 impl SampleSpace {
     fn new(input: &str) -> std::result::Result<SampleSpace, &'static str> {
-        let data = json!(input).as_array()?;
-        let mut Output;
+        let json_input = json!(input);
+        let array = json_input.as_array();
+        let mut data: Vec<Value> = Vec::new();
+        let mut results: Vec<DataRange> = Vec::new();
 
-        for v in data {
-            
+        match array {
+            Some(x) => data = x.to_vec(),
+            None => return Err("input file not structured properly"),
         }
+
+        data.into_iter().for_each(|v| {
+            let range = DataRange::new(v);
+            match range {
+                Ok(x) => results.push(x),
+                Err(e) => panic!("{}", e),
+            }
+        });
         
 
 
-        Ok(SampleSpace{ space: Output })
+        Ok(SampleSpace{ space: results })
     }
 }
 

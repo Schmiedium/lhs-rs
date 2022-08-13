@@ -8,7 +8,7 @@ fn main() {
         process::exit(1);
     });
 
-    if let Err(e) = lhsrs::run(input) {
+    if let Err(e) = lhs_rs::run(input) {
         println!("Application error: {}", e);
         process::exit(1);
     }
