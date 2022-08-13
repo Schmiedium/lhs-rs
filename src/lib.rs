@@ -2,6 +2,7 @@ use std::{fs, error::Error, result, process::Output};
 use serde_json::{Value, json};
 
 pub fn run(input: &str) -> std::result::Result<(), Box<dyn Error>> {
+    println!("{}", input);
     let contents: String = fs::read_to_string(input)?;
 
     let space = SampleSpace::new(&contents)?;
