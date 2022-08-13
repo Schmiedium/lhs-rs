@@ -3,10 +3,7 @@ use std::{env, process};
 fn main() {
     let args: Vec<String> = env::args().collect();
 
-    let input: &str = &args[1].unwrap_or_else(|err| {
-        println!("Problem parsing arguments: {}", err);
-        process::exit(1);
-    });
+    let input: &str = &args[1];
 
     if let Err(e) = lhs_rs::run(input) {
         println!("Application error: {}", e);

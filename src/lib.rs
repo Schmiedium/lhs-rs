@@ -1,8 +1,10 @@
 use std::{fs, error::Error, result, process::Output};
 use serde_json::{Value, json};
 
-pub fn run(input: &str) -> std::result::Result<(), &'static str> {
-    let contents: String = fs::read_to_string(input).unwrap();
+pub fn run(input: &str) -> std::result::Result<(), Box<dyn Error>> {
+    let contents: String = fs::read_to_string(input)?;
+
+    let space = SampleSpace::new(&contents)?;
 
 
 
@@ -47,12 +49,12 @@ impl DataRange {
     }
 }
 
-struct SampleSpace {
+pub struct SampleSpace {
     space: Vec<DataRange>,
 }
 
 impl SampleSpace {
-    fn new(input: &str) -> std::result::Result<SampleSpace, &'static str> {
+    pub fn new(input: &str) -> std::result::Result<SampleSpace, &'static str> {
         let json_input = json!(input);
         let array = json_input.as_array();
         let mut data: Vec<Value> = Vec::new();
@@ -63,15 +65,10 @@ impl SampleSpace {
             None => return Err("input file not structured properly"),
         }
 
-        data.into_iter().for_each(|v| {
-            let range = DataRange::new(v);
-            match range {
-                Ok(x) => results.push(x),
-                Err(e) => panic!("{}", e),
-            }
-        });
-        
-
+        for v in data {
+            let range = DataRange::new(v)?;
+            results.push(range);
+        }
 
         Ok(SampleSpace{ space: results })
     }
