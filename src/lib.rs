@@ -2,7 +2,7 @@ use std::{fs, error::Error, result, process::Output};
 use serde_json::{Value, json};
 
 pub fn run(input: &str) -> std::result::Result<(), Box<dyn Error>> {
-    println!("{}", input);
+    // println!("{}", input);
     let contents: String = fs::read_to_string(input)?;
 
     let space = SampleSpace::new(&contents)?;
@@ -56,10 +56,13 @@ pub struct SampleSpace {
 
 impl SampleSpace {
     pub fn new(input: &str) -> std::result::Result<SampleSpace, &'static str> {
-        let json_input = json!(input);
+        let json_input: serde_json::Value = serde_json::from_str(&input).expect("unable to read file");
+        // println!("{}", json_input);
         let array = json_input.as_array();
         let mut data: Vec<Value> = Vec::new();
         let mut results: Vec<DataRange> = Vec::new();
+
+        
 
         match array {
             Some(x) => data = x.to_vec(),

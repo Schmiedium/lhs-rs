@@ -1,23 +1,26 @@
-{"input":[
+[
     {
+        "name": "x",
         "lower_bound": 0,
         "upper_bound": 100,
         "step_size": 2
     },
     {
+        "name": "y",
         "lower_bound": 0,
         "upper_bound": 100,
         "step_size": 2
     },
     {
+        "name": "z",
         "lower_bound": 0,
         "upper_bound": 100,
         "step_size": 2
     },
     {
+        "name": "w",
         "lower_bound": 0,
         "upper_bound": 100,
         "step_size": 2
     }
 ]
-}
