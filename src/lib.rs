@@ -17,8 +17,7 @@ pub fn run(input: &str) -> std::result::Result<(), Box<dyn Error>> {
 struct DataRange {
     name: String,
     lower_bound: f64,
-    upper_bound: f64,
-    step_size: f64,
+    upper_bound: f64
 }
 
 impl DataRange {
@@ -41,12 +40,8 @@ impl DataRange {
             Some(x) => upper_bound = x,
             None => return Err("all variables must specify an upper bound"),
         };
-        match range["step_size"].as_f64() {
-            Some(x) => step_size = x,
-            None => return Err("all variables must specify a step size")
-        };
 
-        Ok(DataRange{ name: name, lower_bound: lower_bound, upper_bound: upper_bound, step_size: step_size})
+        Ok(DataRange{ name: name, lower_bound: lower_bound, upper_bound: upper_bound})
     }
 }
 
