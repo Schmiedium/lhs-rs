@@ -50,16 +50,20 @@ impl DataRange {
 
 pub struct SampleSpace {
     space: Vec<DataRange>,
-    samples: i32,
+    samples: i64,
 }
 
 impl SampleSpace {
     pub fn new(input: &str) -> std::result::Result<SampleSpace, &'static str> {
         let json_input: serde_json::Value = serde_json::from_str(&input).expect("unable to read file");
-        
+        // println!("{}", json_input);
 
-
-        let array = json_input.as_array();
+        let samples: i64;
+        match json_input["samples"].as_i64() {
+            Some(x) => (samples = x),
+            None => return Err("json file must contain a \"samples\" field"),
+        };
+        let array = json_input["parameters"].as_array();
         let mut data: Vec<Value> = Vec::new();
         let mut results: Vec<DataRange> = Vec::new();
 
@@ -75,22 +79,22 @@ impl SampleSpace {
             results.push(range);
         }
 
-        Ok(SampleSpace{ space: results, samples: 9 })
+        Ok(SampleSpace{ space: results, samples: samples })
     }
 }
 
-fn generate_levels(samples: i32) -> Vec<i32> {
+fn generate_levels(samples: i64) -> Vec<i64> {
         
     let mut strata = Vec::new();
 
-    (-samples/2..(samples/2)+1).for_each(|i: i32| {
+    (-samples/2..(samples/2)+1).for_each(|i: i64| {
         strata.push(i);
     });
 
     strata
 }
 
-fn generate_level_perms(levels: Vec<i32>, factors: usize) -> Result< Vec<Vec<i32>>, &'static str> {
+fn generate_level_perms(levels: Vec<i64>, factors: usize) -> Result< Vec<Vec<i64>>, &'static str> {
     let len = levels.len();
     if len < factors {
         return Err("invalid space: must have more levels than factors to test");
@@ -113,7 +117,7 @@ fn generate_sample_matrix(space: SampleSpace) -> Result< Vec<Vec<f64>>, &'static
     println!("{:?}", level_matrix);
 
     Ok(level_matrix.into_iter()
-    .map(|column: Vec<i32>| -> Vec<f64> {
+    .map(|column: Vec<i64>| -> Vec<f64> {
 
         column.into_iter()
         .map(|entry| -> f64 {
