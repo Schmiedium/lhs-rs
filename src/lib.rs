@@ -2,6 +2,7 @@ use core::num;
 use std::{fs, error::Error, result, process::Output};
 use serde_json::{Value};
 use itertools::Itertools;
+use rand::seq::IteratorRandom;
 
 pub fn run(input: &str) -> std::result::Result<(), Box<dyn Error>> {
     // println!("{}", input);
@@ -85,9 +86,14 @@ fn generate_levels(num_runs: u32) -> Vec<i32> {
     strata
 }
 
-fn generate_level_perms(levels: Vec<i32>) -> Vec<Vec<i32>> {
+fn generate_level_perms(levels: Vec<i32>, factors: usize) -> Result< Vec<Vec<i32>>, &'static str> {
     let len = levels.len();
-    levels.into_iter().permutations(len).unique().collect_vec()
+    if len < factors {
+        return Err("invalid space: must have more levels than factors to test");
+    }
+    
+    let mut range = rand::thread_rng();
+    Ok(levels.into_iter().permutations(len).unique().choose_multiple(&mut range, factors))
 }
 
 
@@ -98,11 +104,6 @@ mod tests {
     #[test]
     fn test_levels_output() {
         assert_eq!(generate_levels(5), vec![-2, -1, 0, 1, 2]);
-    }
-
-    #[test]
-    fn test_level_columns() {
-        assert_eq!(generate_level_perms(vec![-1, 0, 1]), vec![vec![-1, 0, 1], vec![-1, 1, 0], vec![0, -1, 1], vec![0, 1, -1], vec![1, -1, 0], vec![1, 0, -1],])
     }
     
     
