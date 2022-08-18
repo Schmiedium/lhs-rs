@@ -54,7 +54,9 @@ pub struct SampleSpace {
 impl SampleSpace {
     pub fn new(input: &str) -> std::result::Result<SampleSpace, &'static str> {
         let json_input: serde_json::Value = serde_json::from_str(&input).expect("unable to read file");
-        // println!("{}", json_input);
+        
+
+
         let array = json_input.as_array();
         let mut data: Vec<Value> = Vec::new();
         let mut results: Vec<DataRange> = Vec::new();
@@ -75,11 +77,11 @@ impl SampleSpace {
     }
 }
 
-fn generate_levels(num_runs: u32) -> Vec<i32> {
+fn generate_levels(samples: i32) -> Vec<i32> {
         
     let mut strata = Vec::new();
 
-    (-((num_runs as i32)/2)..(num_runs as i32 + 1)/2).for_each(|i: i32| {
+    (-samples/2..(samples/2)+1).for_each(|i: i32| {
         strata.push(i);
     });
 
@@ -91,12 +93,27 @@ fn generate_level_perms(levels: Vec<i32>, factors: usize) -> Result< Vec<Vec<i32
     if len < factors {
         return Err("invalid space: must have more levels than factors to test");
     }
-    
+
     let mut range = rand::thread_rng();
     Ok(levels.into_iter().permutations(len).unique().choose_multiple(&mut range, factors))
 }
 
+fn generate_sample_matrix(samples: i32, level_matrix: Vec<Vec<i32>>) {
 
+    level_matrix.into_iter()
+    .map(|column: Vec<i32>| -> Vec<f64> {
+        
+        column.into_iter()
+        .map(|entry| -> f64 {
+            let random = rand::random::<f64>();
+            let entry = (entry + (samples-1)/2) as f64;
+            (entry + random)/(samples as f64)
+        })
+        .collect_vec()
+
+    }).collect_vec();
+
+}
 #[cfg(test)]
 mod tests {
     use super::*;
