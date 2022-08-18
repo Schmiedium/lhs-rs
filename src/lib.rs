@@ -74,10 +74,11 @@ impl SampleSpace {
     }
 }
 
-fn generate_levels(num_runs: i32) -> Vec<i32> {
+fn generate_levels(num_runs: u32) -> Vec<i32> {
+        
     let mut strata = Vec::new();
 
-    (-num_runs/2..num_runs/2 + 1).for_each(|i: i32| {
+    (-((num_runs as i32)/2)..(num_runs as i32 + 1)/2).for_each(|i: i32| {
         strata.push(i);
     });
 
