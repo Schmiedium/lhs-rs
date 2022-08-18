@@ -1,5 +1,7 @@
+use core::num;
 use std::{fs, error::Error, result, process::Output};
-use serde_json::{Value, json};
+use serde_json::{Value};
+use itertools::Itertools;
 
 pub fn run(input: &str) -> std::result::Result<(), Box<dyn Error>> {
     // println!("{}", input);
@@ -26,7 +28,6 @@ impl DataRange {
         let mut name: String = String::new();
         let lower_bound: f64;
         let upper_bound: f64;
-        let step_size: f64;
 
         match range["name"].as_str() {
             Some(x) => name = x.to_string(),
@@ -73,11 +74,35 @@ impl SampleSpace {
     }
 }
 
+fn generate_levels(num_runs: i32) -> Vec<i32> {
+    let mut strata = Vec::new();
+
+    (-num_runs/2..num_runs/2 + 1).for_each(|i: i32| {
+        strata.push(i);
+    });
+
+    strata
+}
+
+fn generate_level_perms(levels: Vec<i32>) -> Vec<Vec<i32>> {
+    let len = levels.len();
+    levels.into_iter().permutations(len).unique().collect_vec()
+}
+
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
+    #[test]
+    fn test_levels_output() {
+        assert_eq!(generate_levels(5), vec![-2, -1, 0, 1, 2]);
+    }
+
+    #[test]
+    fn test_level_columns() {
+        assert_eq!(generate_level_perms(vec![-1, 0, 1]), vec![vec![-1, 0, 1], vec![-1, 1, 0], vec![0, -1, 1], vec![0, 1, -1], vec![1, -1, 0], vec![1, 0, -1],])
+    }
     
     
 }
