@@ -10,7 +10,8 @@ pub fn run(input: &str) -> std::result::Result<(), Box<dyn Error>> {
 
     let space = SampleSpace::new(&contents)?;
 
-
+    let lhs = generate_sample_matrix(space)?;
+    println!("{:?}", lhs);
 
     Ok(())
 }
@@ -49,6 +50,7 @@ impl DataRange {
 
 pub struct SampleSpace {
     space: Vec<DataRange>,
+    samples: i32,
 }
 
 impl SampleSpace {
@@ -73,7 +75,7 @@ impl SampleSpace {
             results.push(range);
         }
 
-        Ok(SampleSpace{ space: results })
+        Ok(SampleSpace{ space: results, samples: 9 })
     }
 }
 
@@ -98,10 +100,17 @@ fn generate_level_perms(levels: Vec<i32>, factors: usize) -> Result< Vec<Vec<i32
     Ok(levels.into_iter().permutations(len).unique().choose_multiple(&mut range, factors))
 }
 
-fn generate_sample_matrix(samples: i32, factors: usize) -> Result< Vec<Vec<f64>>, &'static str>{
+fn generate_sample_matrix(space: SampleSpace) -> Result< Vec<Vec<f64>>, &'static str>{
+
+    let samples = space.samples;
+    println!("{:?}", samples);
+    let factors = space.space.len();
+    println!("{:?}", factors);
 
     let levels = generate_levels(samples);
+    println!("{:?}", levels);
     let level_matrix = generate_level_perms(levels, factors)?;
+    println!("{:?}", level_matrix);
 
     Ok(level_matrix.into_iter()
     .map(|column: Vec<i32>| -> Vec<f64> {
