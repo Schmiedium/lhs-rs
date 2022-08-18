@@ -98,11 +98,14 @@ fn generate_level_perms(levels: Vec<i32>, factors: usize) -> Result< Vec<Vec<i32
     Ok(levels.into_iter().permutations(len).unique().choose_multiple(&mut range, factors))
 }
 
-fn generate_sample_matrix(samples: i32, level_matrix: Vec<Vec<i32>>) {
+fn generate_sample_matrix(samples: i32, factors: usize) -> Result< Vec<Vec<f64>>, &'static str>{
 
-    level_matrix.into_iter()
+    let levels = generate_levels(samples);
+    let level_matrix = generate_level_perms(levels, factors)?;
+
+    Ok(level_matrix.into_iter()
     .map(|column: Vec<i32>| -> Vec<f64> {
-        
+
         column.into_iter()
         .map(|entry| -> f64 {
             let random = rand::random::<f64>();
@@ -111,7 +114,7 @@ fn generate_sample_matrix(samples: i32, level_matrix: Vec<Vec<i32>>) {
         })
         .collect_vec()
 
-    }).collect_vec();
+    }).collect_vec())
 
 }
 #[cfg(test)]
@@ -124,4 +127,8 @@ mod tests {
     }
     
     
+    #[test]
+    fn test_level_columns() {
+        assert_eq!(generate_level_perms(vec![-1, 0, 1], 2).unwrap().len(), 2)
+    }
 }
