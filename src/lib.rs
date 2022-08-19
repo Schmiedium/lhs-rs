@@ -10,7 +10,6 @@ pub fn run(input: &str) -> std::result::Result<(), Box<dyn Error>> {
     let space = SampleSpace::new(&contents)?;
 
     let lhs = generate_sample_matrix(space)?;
-    println!("{:?}", lhs);
 
     Ok(())
 }
@@ -55,7 +54,6 @@ pub struct SampleSpace {
 impl SampleSpace {
     pub fn new(input: &str) -> std::result::Result<SampleSpace, &'static str> {
         let json_input: serde_json::Value = serde_json::from_str(&input).expect("unable to read file");
-        // println!("{}", json_input);
 
         let samples: i64;
         match json_input["samples"].as_i64() {
@@ -116,14 +114,10 @@ fn generate_level_perms(mut levels: Vec<i64>, factors: usize) -> Result< Vec<Vec
 fn generate_sample_matrix(space: SampleSpace) -> Result< Vec<Vec<f64>>, &'static str>{
 
     let samples = space.samples;
-    println!("{:?}", samples);
     let factors = space.space.len();
-    println!("{:?}", factors);
 
     let levels = generate_levels(samples);
-    println!("{:?}", levels);
     let level_matrix = generate_level_perms(levels, factors)?;
-    println!("{:?}", level_matrix);
 
     Ok(level_matrix.into_iter()
     .map(|column: Vec<i64>| -> Vec<f64> {
