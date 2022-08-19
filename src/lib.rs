@@ -2,7 +2,6 @@ use std::{fs, error::Error, result, process::Output};
 use serde_json::{Value};
 use itertools::Itertools;
 use rand::{seq::{IteratorRandom, SliceRandom}, Rng};
-use num::{BigUint, One};
 
 pub fn run(input: &str) -> std::result::Result<(), Box<dyn Error>> {
     // println!("{}", input);
@@ -94,11 +93,8 @@ fn generate_levels(samples: i64) -> Vec<i64> {
     strata
 }
 
-fn factorial(n: usize) -> BigUint {
-    (1..=n).fold(BigUint::one(), |a, b| a * b)
-}
 
-fn generate_level_perms(levels: Vec<i64>, factors: usize) -> Result< Vec<Vec<i64>>, &'static str> {
+fn generate_level_perms(mut levels: Vec<i64>, factors: usize) -> Result< Vec<Vec<i64>>, &'static str> {
     let len = levels.len();
     if len < factors {
         return Err("invalid space: must have more levels than factors to test");
@@ -107,9 +103,13 @@ fn generate_level_perms(levels: Vec<i64>, factors: usize) -> Result< Vec<Vec<i64
     let mut range = rand::thread_rng();
 
     Ok((0..factors).into_iter().map(|_| -> Vec<i64> {
-        let n: usize = range.gen_range(0..factorial(len));
-        let vec = levels.iter().permutations(len).nth(n).unwrap();
-        return vec.into_iter().map(|x| -> i64 {*x}).collect_vec();
+
+        levels.shuffle(&mut range);
+        levels.iter().map(|x| -> i64 {*x}).collect_vec()
+
+        // let n: usize = range.gen_range(0..factorial(len));
+        // let vec = levels.iter().permutations(len).nth(n).unwrap();
+        // return vec.into_iter().map(|x| -> i64 {*x}).collect_vec();
     }).collect_vec())
 }
 
