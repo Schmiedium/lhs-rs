@@ -1,6 +1,6 @@
 use data::Data::DataRange;
 use itertools::{Itertools, zip};
-use rand::seq::SliceRandom;
+use rand::{seq::SliceRandom, distributions::{Distribution, Uniform}};
 use std::{error::Error, fs};
 mod data;
 use crate::data::Data::SampleSpace;
@@ -37,7 +37,7 @@ pub fn run(input: &str) -> std::result::Result<(), Box<dyn Error>> {
 fn generate_levels(samples: i64) -> Vec<i64> {
     let mut strata = Vec::new();
 
-    (-samples / 2..(samples / 2) + 1).for_each(|i: i64| {
+    (-(samples - 1) / 2..(samples / 2) + 1).for_each(|i: i64| {
         strata.push(i);
     });
 
@@ -87,6 +87,7 @@ fn generate_lhs(space: SampleSpace) -> Result<Vec<Vec<f64>>, &'static str> {
 
     let levels = generate_levels(samples);
     let level_matrix = generate_level_perms(levels, space.space)?;
+    // println!("{:?}", &level_matrix);
 
     Ok(generate_sample_matrix(level_matrix, samples))
 
@@ -94,15 +95,19 @@ fn generate_lhs(space: SampleSpace) -> Result<Vec<Vec<f64>>, &'static str> {
 }
 
 fn generate_sample_matrix(level_matrix: Vec<(Vec<i64>, DataRange)>, samples: i64) -> Vec<Vec<f64>> {
+    let mut rand = rand::thread_rng();
     level_matrix
         .into_iter()
         .map(|column: (Vec<i64>, DataRange)| -> Vec<f64> {
             column.0
                 .into_iter()
                 .map(|entry| -> f64 {
-                    let random = rand::random::<f64>();
-                    let entry = (entry + (samples - 1) / 2) as f64;
+                    let random = Uniform::from(0.0..1.0).sample(&mut rand);
+                    // println!("{:?}", &random);
+                    let entry = (entry + ((samples - 1) / 2)) as f64;
+                    // println!("{:?}", &entry);
                     let entry = (entry + random) / (samples as f64);
+                    // println!("{:?}", &entry);
                     let dilation_factor = column.1.upper_bound - column.1.lower_bound;
                     entry * dilation_factor + column.1.lower_bound
                 })

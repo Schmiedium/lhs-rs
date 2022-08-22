@@ -3,7 +3,8 @@ pub mod Data {
     use std;
     use serde_json::Value;
 
-    pub(crate) struct DataRange {
+    #[derive(Debug)]
+pub(crate) struct DataRange {
         pub(crate) name: String,
         pub(crate) lower_bound: f64,
         pub(crate) upper_bound: f64
