@@ -158,11 +158,18 @@ fn write_to_csv(sample_matrix: &Vec<Vec<f64>>, space: &SampleSpace) -> () {
     header.push_str("\n");
 
     sample_matrix.iter().for_each(|point| -> () {
-        let line = String::new();
-        contents.push_str(&*line);
+        let mut line = String::new();
+        zip(point, &space.space).for_each(|x| -> () {
+            line.push_str(",{{{");
+            line.push_str(&x.1.name);
+            line.push_str("}}},");
+            line.push_str(&x.0.to_string());
+        });
+        line.push_str(",\n");
+        contents.push_str(&line);
     });
 
-    println!("{}", header);
+    println!("{}{}", header, contents);
 }
 
 #[cfg(test)]
