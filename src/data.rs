@@ -1,4 +1,4 @@
-pub mod Data {
+pub mod data {
     use serde_json;
     use std;
     use serde_json::Value;
@@ -34,7 +34,8 @@ pub(crate) struct DataRange {
         }
     }
 
-    pub struct SampleSpace {
+    #[derive(Debug)]
+pub struct SampleSpace {
         pub(crate) space: Vec<DataRange>,
         pub(crate) samples: i64,
     }
