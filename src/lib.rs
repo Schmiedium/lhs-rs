@@ -1,7 +1,7 @@
 use data::data::DataRange;
 use itertools::{Itertools, zip};
 use rand::{seq::SliceRandom, distributions::{Distribution, Uniform}};
-use std::{error::Error, fs};
+use std::{error::Error, fs::{self, File}, io::Write};
 mod data;
 use crate::data::data::SampleSpace;
 
@@ -22,7 +22,7 @@ pub fn run(input: &str) -> std::result::Result<(), Box<dyn Error>> {
 
     write_to_csv(&lhs, &space);
 
-    println!("{:?}", lhs);
+    // println!("{:?}", lhs);
 
     Ok(())
 }
@@ -149,12 +149,12 @@ fn transpose<T>(v: Vec<Vec<T>>) -> Vec<Vec<T>> {
 /// 
 /// # Returns
 /// Nothing
-fn write_to_csv(sample_matrix: &Vec<Vec<f64>>, space: &SampleSpace) -> () {
+fn write_to_csv(sample_matrix: &Vec<Vec<f64>>, space: &SampleSpace) -> std::io::Result<()> {
     let filename = "output.csv";
     let mut contents: String = String::new();
     let mut header = String::from("CaseName");
 
-    space.space.iter().for_each(|x| -> () { header.push_str(&*format!("{}{}{}{}{}", String::from(","), x.name, String::from("_"), String::from("Template,"), x.name)); });
+    space.space.iter().for_each(|x| -> () { header.push_str(&format!("{}{}{}{}{}", String::from(","), x.name, String::from("_"), String::from("Template,"), x.name)); });
     header.push_str("\n");
 
     sample_matrix.iter().for_each(|point| -> () {
@@ -169,7 +169,14 @@ fn write_to_csv(sample_matrix: &Vec<Vec<f64>>, space: &SampleSpace) -> () {
         contents.push_str(&line);
     });
 
-    println!("{}{}", header, contents);
+    header.push_str(&contents);
+    contents = header;
+
+    let mut file = File::create(filename)?;
+    file.write_all(contents.as_bytes())?;
+    // println!("{}", contents);
+
+    Ok(())
 }
 
 #[cfg(test)]
