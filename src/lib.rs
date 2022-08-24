@@ -20,7 +20,7 @@ pub fn run(input: &str) -> std::result::Result<(), Box<dyn Error>> {
 
     let lhs = generate_lhs(&space)?;
 
-    write_to_csv(&lhs, &space);
+    write_to_csv(&lhs, &space)?;
 
     // println!("{:?}", lhs);
 
@@ -179,35 +179,3 @@ fn write_to_csv(sample_matrix: &Vec<Vec<f64>>, space: &SampleSpace) -> std::io::
     Ok(())
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use std::{collections::HashSet, hash::Hash};
-
-    fn has_unique_elements<T>(iter: T) -> bool
-    where
-        T: IntoIterator,
-        T::Item: Eq + Hash,
-    {
-        let mut uniq = HashSet::new();
-        iter.into_iter().all(move |x| uniq.insert(x))
-    }
-
-    #[test]
-    fn test_levels_output() {
-        assert_eq!(generate_levels(5), vec![-2, -1, 0, 1, 2]);
-    }
-
-    #[test]
-    fn test_level_columns() {
-        assert_eq!(generate_level_perms(vec![-1, 0, 1], 2).unwrap().len(), 2)
-    }
-
-    #[test]
-    fn test_level_columns_unique() {
-        assert!(has_unique_elements(generate_level_perms(
-            generate_levels(100),
-            4
-        )))
-    }
-}
