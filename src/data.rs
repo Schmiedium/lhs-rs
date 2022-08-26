@@ -34,7 +34,7 @@ pub(crate) struct DataRange {
         }
     }
 
-    #[derive(Debug)]
+#[derive(Debug)]
 pub struct SampleSpace {
         pub(crate) space: Vec<DataRange>,
         pub(crate) samples: i64,
