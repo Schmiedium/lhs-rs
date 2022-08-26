@@ -173,7 +173,7 @@ fn write_to_csv(sample_matrix: &Vec<Vec<f64>>, space: &SampleSpace) -> std::io::
         name.pop();
         line.push_str(",\n");
         name.push_str(&line);
-        contents.push_str(&name);
+        contents.push_str(&line);
     });
 
     header.push_str(&contents);
