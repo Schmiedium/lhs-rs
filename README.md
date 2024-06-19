@@ -1,6 +1,6 @@
-Takes in a json file as an argument, parses, and returns a Latin Hypercube(oid) Sample
+Takes in a json file as an argument, parses, and returns a Latin Hypercube Sample of the parameter space
 
-Currently it parses the json file correctly and that's about it and generates the data for the points. 
+Currently it parses the json file correctly and generates the data for the points. 
 Argument handling can be improved, error handling can be improved, efficiency needs to be improved.
 Documentation is also needed.
 The current main issue is with generating permutations of the level ranges
