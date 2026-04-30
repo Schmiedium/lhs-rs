@@ -1,19 +1,18 @@
 pub mod data {
     use serde_json;
-    use std;
     use serde_json::Value;
+    use std;
 
     #[derive(Debug)]
-pub(crate) struct DataRange {
+    pub(crate) struct DataRange {
         pub(crate) name: String,
         pub(crate) lower_bound: f64,
-        pub(crate) upper_bound: f64
+        pub(crate) upper_bound: f64,
     }
 
     impl DataRange {
-        pub(crate) fn new(range: Value) -> std::result::Result<DataRange, &'static str>{
-
-            let mut name: String = String::new();
+        pub(crate) fn new(range: Value) -> std::result::Result<DataRange, &'static str> {
+            let name: String;
             let lower_bound: f64;
             let upper_bound: f64;
 
@@ -30,30 +29,33 @@ pub(crate) struct DataRange {
                 None => return Err("all variables must specify an upper bound"),
             };
 
-            Ok(DataRange{ name: name, lower_bound: lower_bound, upper_bound: upper_bound})
+            Ok(DataRange {
+                name: name,
+                lower_bound: lower_bound,
+                upper_bound: upper_bound,
+            })
         }
     }
 
-#[derive(Debug)]
-pub struct SampleSpace {
+    #[derive(Debug)]
+    pub struct SampleSpace {
         pub(crate) space: Vec<DataRange>,
         pub(crate) samples: i64,
     }
 
     impl SampleSpace {
         pub fn new(input: &str) -> std::result::Result<SampleSpace, &'static str> {
-            let json_input: serde_json::Value = serde_json::from_str(&input).expect("unable to read file");
+            let json_input: serde_json::Value =
+                serde_json::from_str(&input).expect("unable to read file");
 
             let samples: i64;
             match json_input["samples"].as_i64() {
-                Some(x) => (samples = x),
+                Some(x) => samples = x,
                 None => return Err("json file must contain a \"samples\" field"),
             };
             let array = json_input["parameters"].as_array();
-            let mut data: Vec<Value> = Vec::new();
+            let data: Vec<Value>;
             let mut results: Vec<DataRange> = Vec::new();
-
-        
 
             match array {
                 Some(x) => data = x.to_vec(),
@@ -65,7 +67,10 @@ pub struct SampleSpace {
                 results.push(range);
             }
 
-            Ok(SampleSpace{ space: results, samples: samples })
+            Ok(SampleSpace {
+                space: results,
+                samples: samples,
+            })
         }
     }
 }
